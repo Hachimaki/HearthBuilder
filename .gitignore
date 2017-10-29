@@ -1,0 +1,6 @@
+# Extensions
+*.pyc
+
+
+# Specific files
+HearthDB/db.json
