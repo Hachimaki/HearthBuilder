@@ -1,8 +1,8 @@
-#!/usr/bin/env python2
+#!/usr/bin/env python3
 
 import click
 
-from models import Deck
+from .models import Deck
 
 @click.command()
 @click.argument("code", type=str)
@@ -10,7 +10,7 @@ def decode(code):
     deck = Deck(code)
 
     for card in deck.cards:
-        print card.name
+        print(card.name)
 
 
 if __name__ == '__main__':
