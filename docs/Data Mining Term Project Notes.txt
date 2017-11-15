@@ -1,0 +1,13 @@
+Data Mining Term Project
+
+Matlab Project
+
+Numerical Data
+
+Concept:
+	*** Hearthstone deck building based off a player's collection
+		Get player's collection
+		Get decklists from sites with APIs
+		Identify win-rates, common elements/cards/combos of decks with high win rates to make recommendations
+
+Research Question: 

@@ -1,0 +1,11 @@
+# Extensions
+*.pyc
+
+
+# Specific files
+HearthDB/db.json
+
+__pycache__
+
+\.DS_Store
+/.idea
