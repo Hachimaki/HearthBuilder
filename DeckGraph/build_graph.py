@@ -1,7 +1,10 @@
-from database import new_session, Base, Edge
-from database import Node as DeckItem
+from sqlalchemy.orm.session import Session
 
-import json
+from database import new_session, Edge, Node, Archetype, Card
+from database import Base as BaseModel
+
+
+import json, itertools
 
 
 class DeckModel:
@@ -32,33 +35,83 @@ class DeckModel:
         # [] of [] -> [] of ()
         self.deck_list = [tuple(l) for l in self.deck_list]
 
-        # str -> int
+        # str -> int ???
+
+
+def find_or_create_archetype(session, kwargs):
+    instance = session.query(Archetype).filter_by(**kwargs).first()
+    if instance:
+        return instance
+    else:
+        instance = Archetype(**kwargs)
+        session.add(instance)
+        session.commit()
+        return instance
+
+
+def find_or_create(session, model, **kwargs):
+    instance = session.query(model).filter_by(**kwargs).first()
+    if instance:
+        return instance
+    else:
+        instance = model(**kwargs)
+        session.add(instance)
+        return instance
+
+
+def get_card(card_db: dict, dbf_id: int) -> dict:
+    """
+    Returns dict representing a card. Useful attribute is the
+    name.
+    :param dbf_id: Int ID of the card you're looking for.
+    :return: A dict representing a card.
+    """
+    return next(card for card in card_db if card["dbfId"] == dbf_id)
 
 
 if __name__ == '__main__':
 
     db = new_session()
 
-    with open('database/decks.json') as json_data:
-        data = json.load(json_data)
+    with open('database/decks.json') as deck_data, open('database/cards.json') as card_data:
+        data = json.load(deck_data)
         data = data['series']['data']
+
+        card_db = json.load(card_data)
 
         for hero, decks in data.items():
             print(hero)
 
+            num_decks = len(decks)
+            counter = 1
             for deck in decks:
+                print(counter, "/", num_decks)
+                counter += 1
+
                 model = DeckModel(**deck)
+                print(model.deck_id)
 
-                items = []
-                for dbfId, count in model.deck_list:
-                    item = DeckItem(dbfId=dbfId,
-                                    count=count,
-                                    archetype=model.archetype_id)
+                arch = find_or_create(db, Archetype, id=model.archetype_id)
+                nodes = [find_or_create(db, Node, dbfId=dbfId, count=count) for dbfId, count in model.deck_list]
 
-                    edges = [Edge(node1=item, node2=i) for i in items]
-                    [db.add(edge) for edge in edges]
-                    items.append(item)
-                    db.add(item)
-                    db.commit()
+                for n in nodes:
+                    card = get_card(card_db, n.dbfId)
+                    card_model = find_or_create(db, Card, id=n.dbfId, name=card['name'])
+                    if arch not in n.archetype:
+                        n.archetype.append(arch)
+                        card_model.archetype.append(arch)
 
-                exit()
+                edges = itertools.combinations(nodes, 2)
+
+                for n1, n2 in edges:
+
+                    new_edge = None
+                    if n1.id <= n2.id:
+                        new_edge = find_or_create(db, Edge, node1=n1, node2=n2, weight=1)
+                    else:
+                        new_edge = find_or_create(db, Edge, node1=n2, node2=n1, weight=1)
+                    db.add(new_edge)
+
+                db.commit()
+
+            exit()

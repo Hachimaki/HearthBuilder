@@ -17,6 +17,6 @@ def new_session() -> Session:
     return sessionmaker(bind=engine)()
 
 
-from .deck_item import Node, Base, Edge
+from .deck_item import *
 
 Base.metadata.create_all(engine)

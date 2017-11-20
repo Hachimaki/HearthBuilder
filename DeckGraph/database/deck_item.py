@@ -4,18 +4,25 @@ from sqlalchemy.orm import relationship
 
 Base = declarative_base()
 
+node2arch = Table('node2arch',
+                  Base.metadata,
+                  Column('archetype_id', Integer, ForeignKey('Archetype.id')),
+                  Column('node_id', Integer, ForeignKey('Node.id'))
+                 )
 
-# class Association(Base):
-#     __tablename__ = "Association"
-#     left_dbfId = Column(Integer, ForeignKey('DeckItem.dbfId'), primary_key=True)
-#     left_count = Column(Integer, ForeignKey('DeckItem.count'), primary_key=True)
-#     left_arch = Column(Integer, ForeignKey('DeckItem.archtype'), primary_key=True)
-#
-#     right_dbfId = Column(Integer, ForeignKey('DeckItem.dbfId'), primary_key=True)
-#     right_count = Column(Integer, ForeignKey('DeckItem.count'), primary_key=True)
-#     right_arch = Column(Integer, ForeignKey('DeckItem.archtype'), primary_key=True)
-#
-#     associates = relationship("DeckItem", back_populates="associates")
+card2arch = Table('card2arch',
+                  Base.metadata,
+                  Column('archetype_id', Integer, ForeignKey('Archetype.id')),
+                  Column('card_id', Integer, ForeignKey('Card.id'))
+                 )
+
+
+class Archetype(Base):
+    __tablename__ = "Archetype"
+    id = Column(Integer, primary_key=True)
+    node = relationship("Node", secondary=node2arch, back_populates="archetype")
+    card = relationship("Card", secondary=card2arch, back_populates="archetype")
+
 
 class Edge(Base):
     __tablename__ = "Edge"
@@ -23,22 +30,26 @@ class Edge(Base):
     node1_id = Column(Integer, ForeignKey('Node.id'), primary_key=True)
     node2_id = Column(Integer, ForeignKey('Node.id'), primary_key=True)
 
-    weight = Column(Integer)
-
-    node1 = relationship("Node", primaryjoin='Edge.node1_id == Node.id', backref="edges")
+    node1 = relationship("Node", primaryjoin='Edge.node1_id == Node.id')
     node2 = relationship("Node", primaryjoin='Edge.node2_id == Node.id')
 
-    # nodes = relationship("Node",
-    #                      foreign_keys=[node1_id, node2_id],
-    #                      back_populates="edges")
-
-    # nodes = relationship("Node", primaryjoin='and_(Edge.node1_id == Node.id, Edge.node2_id == Node.id)', backref="edges")
+    weight = Column(Integer)
 
 
 class Node(Base):
     __tablename__ = "Node"
     id = Column(Integer, primary_key=True, autoincrement=True)
-    dbfId = Column(Integer)
+    dbfId = Column(Integer, ForeignKey('Card.id'))
     count = Column(Integer)
-    archetype = Column(Integer)
 
+    archetype = relationship("Archetype", secondary=node2arch, back_populates="node")
+    card = relationship("Card", primaryjoin='Node.dbfId == Card.id')
+
+
+class Card(Base):
+    __tablename__ = "Card"
+    id = Column(Integer, primary_key=True)
+    name = Column(String)
+
+    archetype = relationship("Archetype", secondary=card2arch, back_populates="card")
+    nodes = relationship('Node', back_populates="card")
