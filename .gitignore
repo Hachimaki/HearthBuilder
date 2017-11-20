@@ -1,13 +1,12 @@
-# Extensions
+# Language Files
 *.pyc
-
+**/__pycache__
 
 # Specific files
 HearthDB/db.json
+DeckGraph/relations.db
 
-__pycache__
-
+# OS and Editor Files
 \.DS_Store
 /.idea
-
-DeckGraph/relations.db
+**/.vscode
