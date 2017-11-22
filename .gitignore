@@ -1,6 +1,7 @@
 # Language Files
 *.pyc
 **/__pycache__
+/HearthDB/.plotenv
 
 # Specific files
 HearthDB/db.json
