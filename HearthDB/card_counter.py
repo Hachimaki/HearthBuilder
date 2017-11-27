@@ -29,6 +29,7 @@ card_choice_neutral = Counter()
 card_choice_neutral_per_hero = {hero: Counter() for hero in heroes.keys()}
 
 card_choice_hero_only = {hero: Counter() for hero in heroes.keys()}
+card_unique_hero_only = {hero: Counter() for hero in heroes.keys()}
 
 # Look up card names
 card_db = json.load(open('db.json'))
@@ -60,6 +61,7 @@ with open('dataset.json') as json_data:
                     card_counter_unique_neutral[dbfID] += 1
                 else:
                     card_choice_hero_only[hero][(dbfID, count)] += 1
+                    card_unique_hero_only[hero][dbfID] += 1
 
 
 
@@ -126,13 +128,18 @@ write_counter_file(open('data/choice_normal.csv', 'w'), normal_all_choice,
 write_counter_file(open('data/neutral/choice_count.csv', 'w'), card_choice_overall, tuple_key=True)
 
 # Count of choice appearances for neutral cards with legendaries removed (less useful)
-write_counter_file(open('data/neutral/count_no_legendary.csv', 'w'), card_choice_no_legendary,
+write_counter_file(open('data/neutral/choice_count_no_legendary.csv', 'w'), card_choice_no_legendary,
                    tuple_key=True)
 
 #
 for hero, counter in card_choice_hero_only.items():
-    write_counter_file(open('data/hero/choices_{}.csv'.format(hero), 'w'),
+    write_counter_file(open('data/hero/choice_{}.csv'.format(hero), 'w'),
                        counter, decks_per_hero[hero], show_fraction=True, tuple_key=True)
+
+for hero, counter in card_unique_hero_only.items():
+    write_counter_file(open('data/hero/unique_{}.csv'.format(hero), 'w'),
+                       counter, decks_per_hero[hero], show_fraction=True, tuple_key=False)
+
 
 #
 for hero, counter in cards_per_hero_unique.items():
