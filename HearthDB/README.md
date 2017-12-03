@@ -1,34 +1,37 @@
 
-# Forward your ports to the DB
-
-```bash
-ssh -L 27017:localhost:27017 hearthdb@andrewsosa.com
-# password is ALongAndVeryComplicatedPassword
-```
-
-# Use HearthDB
+# How to use
 
 ```python
-from HearthDB import HearthDB 
-db = HearthDB()
+from vectors import get_decks, get_archs, get_card
 ```
 
-## Methods 
+## Methods
 
 ### Get decks
 ```python
-def get_decks(self, hero: int=None):
+def get_decks(arch_id: int=None) -> list:
     """
-    Returns an interable of deck models per Hero, or all if
-    no hero specified.
-    :param hero: Pass a Deck.CLASS_ constant
-    :return: Iterable of decks.
+    Returns a list of Deck objects for each deck in the archetype.
+    Note that Deck.cards has had the popular cards removed.
     """
 ```
 
 #### Example:
 ```python
-priest_decks = db.get_decks(hero=HearthDB.CLASS_PRIEST)
+some_arch = get_decks(arch_id=147)
+```
+
+### Get Archetypes
+```python
+def get_archs() -> list:
+    """
+    Returns a list of available archetypes
+    """
+```
+
+#### Example:
+```python
+all_archs = get_archs()
 ```
 
 ### Look up a card
@@ -50,18 +53,3 @@ for cardid, count in priest_deck.as_cards():
 ```
 
 
-### Count decks
-```python
-def deck_count(self, hero: int=None) -> int:
-    """
-    Returns a count of the decks available per Hero, or all if
-    no hero specified.
-    :param hero: Pass a Deck.CLASS_ constant
-    :return: Int number of decks per class.
-    """
-```
-
-#### Example
-```python
-num = db.deck_count(HearthDB.CLASS_PRIEST)
-```
