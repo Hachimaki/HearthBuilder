@@ -145,3 +145,23 @@ for hero, counter in card_unique_hero_only.items():
 for hero, counter in cards_per_hero_unique.items():
     write_counter_file(open('data/hero/neutral/unique_{}.csv'.format(hero), 'w'),
                        counter, decks_per_hero[hero], show_fraction=True)
+
+
+
+#
+#   Generate JSON vector outputs
+#
+
+def write_json_file(file, data: dict):
+    file.write(json.dumps(data, indent=4, sort_keys=True))
+
+card_zip = zip(range(len(normal_hero_unique_counts)),
+               [dbfid for dbfid, count in normal_hero_unique_counts.most_common()])
+card_map = {dbfID: i for i, dbfID in list(card_zip)}
+
+with open('vectors/card_map.json', 'w') as card_map_json:
+    write_json_file(card_map_json, card_map)
+
+with open('vectors/most_popular_cards.json', 'w') as common_card_json:
+    most_common = [dbfid for dbfid, count in normal_hero_unique_counts.most_common()[:23]]
+    write_json_file(common_card_json, {"most_common": most_common})
