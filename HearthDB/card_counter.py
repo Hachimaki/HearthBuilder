@@ -155,9 +155,8 @@ for hero, counter in cards_per_hero_unique.items():
 def write_json_file(file, data: dict):
     file.write(json.dumps(data, indent=4, sort_keys=True))
 
-card_zip = zip(range(len(normal_hero_unique_counts)),
-               [dbfid for dbfid, count in normal_hero_unique_counts.most_common()])
-card_map = {dbfID: i for i, dbfID in list(card_zip)}
+all_dbfIDs = list(card_counter_unique.keys())
+card_map = {dbfID: all_dbfIDs.index(dbfID) for dbfID in all_dbfIDs}
 
 with open('vectors/card_map.json', 'w') as card_map_json:
     write_json_file(card_map_json, card_map)
