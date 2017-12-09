@@ -31,6 +31,8 @@ card_choice_neutral_per_hero = {hero: Counter() for hero in heroes.keys()}
 card_choice_hero_only = {hero: Counter() for hero in heroes.keys()}
 card_unique_hero_only = {hero: Counter() for hero in heroes.keys()}
 
+win_rates = {}
+
 # Look up card names
 card_db = json.load(open('db.json'))
 def get_card(dbf_id: int) -> dict:
@@ -62,6 +64,10 @@ with open('dataset.json') as json_data:
                 else:
                     card_choice_hero_only[hero][(dbfID, count)] += 1
                     card_unique_hero_only[hero][dbfID] += 1
+
+                if dbfID not in win_rates.keys():
+                    win_rates[dbfID] = list()
+                win_rates[dbfID].append(deck['win_rate'])
 
 
 
@@ -146,7 +152,10 @@ for hero, counter in cards_per_hero_unique.items():
     write_counter_file(open('data/hero/neutral/unique_{}.csv'.format(hero), 'w'),
                        counter, decks_per_hero[hero], show_fraction=True)
 
-
+with open('data/card_win_rates.csv', 'w') as ratefile:
+    for dbfID, rates in win_rates.items():
+        rate = sum(rates) / len(rates)
+        ratefile.write('{}, {}\n'.format(dbfID, rate))
 
 #
 #   Generate JSON vector outputs
