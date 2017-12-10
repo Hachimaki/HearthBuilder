@@ -1,11 +1,27 @@
+# HearthDB
 
-# How to use
+Purpose:
+
+From raw HSReplay data generate:
+
+1. Card usage statistics
+2. Card Popularity graphs per hero
+3. Deck vectors for model creation
+
+## Running the code
+
+1. Install requirements: `pip install -r requirements.txt`
+2. Generate statistics: `python cardcounter.py`
+3. Generate vectors: `python vectors.py`.
+
+Using the popularity graph generator requires special steps for matplotlib which are not covered here. Use at your own discretion.
+
+
+## Methods
 
 ```python
 from vectors import get_decks, get_archs, get_card
 ```
-
-## Methods
 
 ### Get decks
 ```python
