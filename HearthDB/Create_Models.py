@@ -96,7 +96,7 @@ plt.plot(t, Y_Test, 'r', label="Actual")                    # Plot actual
 plt.plot(t, predicted, 'b', label="Predicted")              # Plot predicted
 plt.title("SVM Predicted Archetypes vs. Actual Archetypes")
 plt.xlabel("Deck ID")
-plt.ylabel("Winrate in %")
+plt.ylabel("Archetype ID")
 plt.legend()
 plt.savefig('Graphs/SVM')                                          # Save graph to file called 'SVM'
 print "=-=-=-=-=-=-=-=-=-= Graph Created and saved as 'SVM.png' =-=-=-=-=-=-=-=-=-=-=-="
