@@ -9,6 +9,6 @@ requests==2.18.4
 six==1.11.0
 urllib3==1.22
 scikit-learn
-python-numpy 
-python-scipy 
-python-matplotlib
+numpy 
+scipy 
+matplotlib
