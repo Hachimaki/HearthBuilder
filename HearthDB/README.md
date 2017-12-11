@@ -11,9 +11,13 @@ From raw HSReplay data generate:
 ## Running the code
 
 1. Install requirements: `pip install -r requirements.txt`
-2. Generate statistics: `python cardcounter.py`
-3. Generate vectors: `python vectors.py`
-4. Generate models: `python Create_Models.py`
+2. Generate models: `python Create_Models.py
+`
+## Generate Information about dataset 
+
+1. Generate statistics: `python cardcounter.py`
+2. Generate vectors: `python vectors.py`
+
 
 Using the popularity graph generator requires special steps for matplotlib which are not covered here. Use at your own discretion.
 
